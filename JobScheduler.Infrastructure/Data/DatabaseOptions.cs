@@ -5,18 +5,8 @@ namespace JobScheduler.Infrastructure.Data;
 public class DatabaseOptions
 {
     [Required(AllowEmptyStrings = false)]
-    public string Primary { get; set; } = "";
+    public string Primary { get; set; } = string.Empty;
 
     [Required(AllowEmptyStrings = false)]
-    public string Replica { get; set; } = "";
-}
-
-public sealed class JobDbOptions : DatabaseOptions
-{
-    public const string SectionName = "JobScheduler:JobDb";
-}
-
-public sealed class ScheduleDbOptions : DatabaseOptions
-{
-    public const string SectionName = "JobScheduler:ScheduleDb";
+    public string Replica { get; set; } = string.Empty;
 }

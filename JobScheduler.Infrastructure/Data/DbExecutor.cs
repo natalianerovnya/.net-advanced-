@@ -12,7 +12,9 @@ public sealed class DbExecutor(IDbConnectionFactory factory, ILogger<DbExecutor>
     public async Task<T> ReadAsync<T>(Database database, ReadConsistency consistency, Func<DbConnection, CancellationToken, Task<T>> work, CancellationToken cancellationToken)
     {
         if (consistency == ReadConsistency.Strong)
+        {
             return await RunAsync(database, Intent.Write, work, cancellationToken);
+        }
 
         try
         {

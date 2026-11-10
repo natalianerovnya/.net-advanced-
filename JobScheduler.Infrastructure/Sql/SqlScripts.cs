@@ -1,4 +1,3 @@
-
 namespace JobScheduler.Infrastructure.Sql;
 
 /// <summary>Gives access to the SQL scripts embedded in this assembly (used by tooling and integration tests).</summary>

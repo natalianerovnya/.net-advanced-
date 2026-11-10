@@ -24,19 +24,28 @@ public sealed class CreateJobService(
 
         var (errors, expression, nextExecutionAt) = CreateJobValidator.Validate(request, now);
         if (errors.Count > 0)
+        {
             return Fail(CreateJobError.ValidationFailed, correlationId, errors.ToArray());
+        }
 
         var name = request.Name.Trim();
 
         // Eventual is enough for the owner check; the duplicate check must see the latest committed state.
         var user = await users.GetByIdAsync(request.UserId, ReadConsistency.Eventual, cancellationToken);
         if (user is null)
+        {
             return Fail(CreateJobError.UserNotFound, correlationId, $"User '{request.UserId}' was not found.");
+        }
+
         if (!user.IsActive)
+        {
             return Fail(CreateJobError.UserInactive, correlationId, $"User '{request.UserId}' is not active.");
+        }
 
         if (await jobReader.ExistsByNameAsync(request.UserId, name, ReadConsistency.Strong, cancellationToken))
+        {
             return Fail(CreateJobError.DuplicateName, correlationId, $"A job named '{name}' already exists.");
+        }
 
         var jobId = Guid.NewGuid();
         var job = new Job

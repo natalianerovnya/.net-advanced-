@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Text.Json;
 using Cronos;
 using JobScheduler.Domain;
+using JobScheduler.Domain.Enums;
 
 namespace JobScheduler.Application.Jobs;
 
@@ -17,24 +18,38 @@ internal static class CreateJobValidator
         var errors = new List<string>();
 
         if (request.UserId == Guid.Empty)
+        {
             errors.Add("UserId is required.");
+        }
 
         if (string.IsNullOrWhiteSpace(request.Name))
+        {
             errors.Add("Name is required.");
+        }
         else if (request.Name.Trim().Length > MaxNameLength)
+        {
             errors.Add($"Name must be at most {MaxNameLength} characters.");
+        }
 
         if (request.Description is { Length: > MaxDescriptionLength })
+        {
             errors.Add($"Description must be at most {MaxDescriptionLength} characters.");
+        }
 
         if (!Enum.IsDefined(request.ScheduleType))
+        {
             errors.Add("ScheduleType is invalid.");
+        }
 
         if (!Enum.IsDefined(request.ConcurrencyMode))
+        {
             errors.Add("ConcurrencyMode is invalid.");
+        }
 
         if (string.IsNullOrWhiteSpace(request.Configuration) || !IsJson(request.Configuration))
+        {
             errors.Add("Configuration must be valid JSON.");
+        }
 
         string? expression = null;
         DateTimeOffset? next = null;
@@ -53,9 +68,13 @@ internal static class CreateJobValidator
             if (request.ScheduleType == ScheduleType.Cron)
             {
                 if (TryGetNextCron(candidate, now, out next))
+                {
                     expression = candidate;
+                }
                 else
+                {
                     errors.Add("ScheduleExpression is not a valid cron expression with a future occurrence.");
+                }
             }
             else if (DateTimeOffset.TryParse(candidate, CultureInfo.InvariantCulture,
                          DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal, out var at) && at > now)
@@ -83,7 +102,9 @@ internal static class CreateJobValidator
             _ => (CronFormat?)null
         };
         if (format is null || !CronExpression.TryParse(expression, format.Value, out var cron))
+        {
             return false;
+        }
 
         next = cron.GetNextOccurrence(now, TimeZoneInfo.Utc);
         return next is not null;

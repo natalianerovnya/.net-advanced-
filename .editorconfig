@@ -1,0 +1,77 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = crlf
+indent_style = space
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.{csproj,props,targets,json,slnx,yml,yaml}]
+indent_size = 2
+
+[*.{cs,sql}]
+indent_size = 4
+
+[*.cs]
+# Namespaces and usings
+csharp_style_namespace_declarations = file_scoped:warning
+csharp_using_directive_placement = outside_namespace:warning
+dotnet_sort_system_directives_first = true
+
+# Prefer var and modern syntax
+csharp_style_var_for_built_in_types = true:suggestion
+csharp_style_var_when_type_is_apparent = true:suggestion
+csharp_style_var_elsewhere = true:suggestion
+csharp_prefer_braces = true:suggestion
+
+# Naming: private fields are _camelCase
+dotnet_naming_rule.private_fields_underscore.symbols = private_fields
+dotnet_naming_rule.private_fields_underscore.style = underscore_camel_case
+dotnet_naming_rule.private_fields_underscore.severity = warning
+dotnet_naming_symbols.private_fields.applicable_kinds = field
+dotnet_naming_symbols.private_fields.applicable_accessibilities = private
+dotnet_naming_style.underscore_camel_case.required_prefix = _
+dotnet_naming_style.underscore_camel_case.capitalization = camel_case
+
+# StyleCop: rules that conflict with the conventions above or add noise for this project
+# SA0001: XML comment analysis is not enabled
+dotnet_diagnostic.SA0001.severity = none
+# SA1101: do not require 'this.' prefix
+dotnet_diagnostic.SA1101.severity = none
+# SA1309: private fields use the _camelCase convention
+dotnet_diagnostic.SA1309.severity = none
+# SA1200: usings are placed outside the file-scoped namespace
+dotnet_diagnostic.SA1200.severity = none
+# SA1633: no file header required
+dotnet_diagnostic.SA1633.severity = none
+# SA1413: trailing commas are not required in multi-line initializers
+dotnet_diagnostic.SA1413.severity = none
+# SA1118: allow multi-line arguments (e.g. lambdas and raw SQL strings)
+dotnet_diagnostic.SA1118.severity = none
+# SA1116 / SA1117: allow logger/lambda calls to wrap arguments freely
+dotnet_diagnostic.SA1116.severity = none
+dotnet_diagnostic.SA1117.severity = none
+# SA1204 / SA1201 / SA1202: member ordering is not enforced by access or kind
+dotnet_diagnostic.SA1201.severity = none
+dotnet_diagnostic.SA1202.severity = none
+dotnet_diagnostic.SA1204.severity = none
+# SA1623: do not require "Gets or sets" property summaries
+dotnet_diagnostic.SA1623.severity = none
+
+# Documentation rules: public XML docs are optional
+dotnet_diagnostic.SA1600.severity = none
+dotnet_diagnostic.SA1601.severity = none
+dotnet_diagnostic.SA1602.severity = none
+dotnet_diagnostic.SA1611.severity = none
+dotnet_diagnostic.SA1615.severity = none
+dotnet_diagnostic.SA1629.severity = none
+
+# One type per file (SA1402) and file name matching the type (SA1649) are enforced as warnings
+dotnet_diagnostic.SA1402.severity = warning
+dotnet_diagnostic.SA1649.severity = warning
+
+[JobScheduler.Tests/**/*.cs]
+# Test names use underscores (Method_Scenario_Expected)
+dotnet_diagnostic.SA1600.severity = none
+dotnet_diagnostic.CA1707.severity = none
