@@ -1,4 +1,10 @@
 <Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path=".gitignore" />
+    <File Path="Directory.Build.props" />
+    <File Path="stylecop.json" />
+  </Folder>
   <Project Path="JobScheduler.Api/JobScheduler.Api.csproj" />
   <Project Path="JobScheduler.Application/JobScheduler.Application.csproj" />
   <Project Path="JobScheduler.Domain/JobScheduler.Domain.csproj" />
