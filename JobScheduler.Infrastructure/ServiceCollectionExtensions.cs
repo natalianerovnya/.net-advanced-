@@ -37,7 +37,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IScheduledJobSnapshotWriter>(sp => sp.GetRequiredService<ScheduledJobSnapshotRepository>());
         services.TryAddSingleton<IReconciliationFlagger, LoggingReconciliationFlagger>();
 
-        services.AddSingleton<CreateJobService>();
+        services.AddSingleton<ICreateJobService, CreateJobService>();
         return services;
     }
 }

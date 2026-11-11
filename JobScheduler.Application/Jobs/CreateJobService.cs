@@ -12,7 +12,7 @@ public sealed class CreateJobService(
     IScheduledJobSnapshotWriter snapshotWriter,
     IReconciliationFlagger reconciliation,
     TimeProvider timeProvider,
-    ILogger<CreateJobService> logger)
+    ILogger<CreateJobService> logger) : ICreateJobService
 {
     public async Task<CreateJobResult> CreateAsync(CreateJobRequest request, CancellationToken cancellationToken = default)
     {

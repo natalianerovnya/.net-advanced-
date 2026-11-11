@@ -1,4 +1,5 @@
 <Solution>
+  <Project Path="JobScheduler.Api/JobScheduler.Api.csproj" />
   <Project Path="JobScheduler.Application/JobScheduler.Application.csproj" />
   <Project Path="JobScheduler.Domain/JobScheduler.Domain.csproj" />
   <Project Path="JobScheduler.Infrastructure/JobScheduler.Infrastructure.csproj" />

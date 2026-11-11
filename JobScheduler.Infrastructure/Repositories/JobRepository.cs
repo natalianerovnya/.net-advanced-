@@ -46,10 +46,29 @@ public sealed class JobRepository(IDbExecutor db) : IJobReader, IJobWriter
 
     public async Task AddAsync(Job job, CancellationToken cancellationToken = default)
     {
+        // Dapper ignores enum type handlers when writing parameters, so enums are passed explicitly as names.
+        var parameters = new
+        {
+            job.JobId,
+            job.UserId,
+            job.Name,
+            job.Description,
+            SchedulerType = job.SchedulerType.ToString(),
+            job.ScheduleExpression,
+            job.NextExecutionAtUtc,
+            Status = job.Status.ToString(),
+            ConcurrencyMode = job.ConcurrencyMode.ToString(),
+            job.Configuration,
+            job.JobVersion,
+            job.CreatedAt,
+            job.UpdatedAt,
+            job.DeletedAt,
+        };
+
         try
         {
             await db.WriteAsync(Database.Job, async (conn, ct) =>
-                await conn.ExecuteAsync(new CommandDefinition(Insert, job, cancellationToken: ct)),
+                await conn.ExecuteAsync(new CommandDefinition(Insert, parameters, cancellationToken: ct)),
                 cancellationToken);
         }
         catch (SqlException ex) when (ex.Number is 2601 or 2627 && ex.Message.Contains(UniqueNameIndex, StringComparison.OrdinalIgnoreCase))

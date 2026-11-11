@@ -30,10 +30,26 @@ public sealed class ScheduledJobSnapshotRepository(IDbExecutor db) : IScheduledJ
             conn.QuerySingleOrDefaultAsync<ScheduledJobSnapshot>(new CommandDefinition(SelectByJobId, new { JobId = jobId }, cancellationToken: ct))!,
             cancellationToken);
 
-    public async Task AddAsync(ScheduledJobSnapshot snapshot, CancellationToken cancellationToken = default) =>
+    public async Task AddAsync(ScheduledJobSnapshot snapshot, CancellationToken cancellationToken = default)
+    {
+        // Dapper ignores enum type handlers when writing parameters, so enums are passed explicitly as names.
+        var parameters = new
+        {
+            snapshot.JobId,
+            ScheduleType = snapshot.ScheduleType.ToString(),
+            snapshot.ScheduleExpression,
+            snapshot.NextExecutionAt,
+            snapshot.JobVersion,
+            snapshot.IsEnabled,
+            snapshot.Configuration,
+            ConcurrencyMode = snapshot.ConcurrencyMode.ToString(),
+            snapshot.SyncedAt,
+        };
+
         await db.WriteAsync(Database.Schedule, async (conn, ct) =>
-            await conn.ExecuteAsync(new CommandDefinition(Insert, snapshot, cancellationToken: ct)),
+            await conn.ExecuteAsync(new CommandDefinition(Insert, parameters, cancellationToken: ct)),
             cancellationToken);
+    }
 
     public async Task DeleteAsync(Guid jobId, CancellationToken cancellationToken = default) =>
         await db.WriteAsync(Database.Schedule, async (conn, ct) =>
